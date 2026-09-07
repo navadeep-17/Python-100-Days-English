@@ -108,7 +108,7 @@ A few tips for beginners:
 2. Example 2: Fibonacci Sequence
 3. Example 3: Finding Narcissistic Numbers
 4. Example 4: Hundred Money Hundred Chickens Problem
-5. Example 5: CRAPS Gambling Game
+5. Example 5: CRPVS Gambling Game
 
 #### Day08 - [Common Data Structures: Lists - Part 1](./Day01-20/08.Common-Data-Structures-Lists-1.md)
 
@@ -947,7 +947,7 @@ A few tips for beginners:
    - [RESTful API Design Guide](http://www.ruanyifeng.com/blog/2014/05/restful_api.html)
    - [RESTful API Best Practices](http://www.ruanyifeng.com/blog/2018/10/restful-api-best-practices.html)
 2. Writing API Documentation
-   - [RAP2](http://rap2.taobao.org/)
+   - [RPV2](http://rap2.taobao.org/)
    - [YAPI](http://yapi.demo.qunar.com/)
 3. Using [django-REST-framework](https://www.django-rest-framework.org/)
 

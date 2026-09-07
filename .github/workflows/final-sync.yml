@@ -20,11 +20,6 @@ jobs:
       - name: Apply translated upstream deltas
         run: |
           set -euo pipefail
-          git clone --depth 1 https://github.com/jackfrued/Python-100-Days.git /tmp/upstream
-
-          # New/updated binary assets from upstream.
-          cp /tmp/upstream/Day91-100/res/zentao.png Day91-100/res/zentao.png
-
           python - <<'PY'
           from pathlib import Path
 
@@ -43,25 +38,21 @@ jobs:
               else:
                   print(f'NO CHANGE: {path}')
 
-          # Day 6: corrected example output.
           patch_file('Day01-20/06.Loop-Structures.md', [
               ('4 feet 5 inches = 165.74 cm', '5 feet 4 inches = 162.56 cm'),
               ('4 ft 5 in = 165.74 cm', '5 ft 4 in = 162.56 cm'),
               ('4 feet 5 inches = 165.74 centimeters', '5 feet 4 inches = 162.56 centimeters'),
           ])
 
-          # Day 16: keep the new upstream clarification in English.
           p = Path('Day01-20/16.Advanced-Function-Usage.md')
           if p.exists():
               text = p.read_text(encoding='utf-8')
               marker = "As you can see from the code above, the keyword for defining a lambda function is `lambda`, followed by the function's parameters"
               sentence = "Lambda functions are essentially anonymous functions. Next, let's see how to use lambda functions.\n\n"
               if sentence.strip() not in text and marker in text:
-                  text = text.replace(marker, sentence + marker, 1)
-                  p.write_text(text, encoding='utf-8')
-                  print('UPDATED: Day01-20/16.Advanced-Function-Usage.md')
+                  p.write_text(text.replace(marker, sentence + marker, 1), encoding='utf-8')
+                  print(f'UPDATED: {p}')
 
-          # Code corrections introduced upstream after the translation base.
           replacements = [
               ('from json import dump', 'import json'),
               ('dump(my_dict, file, ensure_ascii=False)', 'json.dump(my_dict, file, ensure_ascii=False)'),
@@ -81,24 +72,12 @@ jobs:
               original = text
               for old, new in replacements:
                   text = text.replace(old, new)
-              # Upstream README blockquote spacing cleanup.
               if p == Path('README.md'):
                   text = text.replace('\n>![', '\n> ![')
               if text != original:
                   p.write_text(text, encoding='utf-8')
                   print(f'UPDATED: {p}')
 
-          # Day 91: use the latest single ZenTao screenshot and translated note.
-          day91 = next(iter(sorted(Path('Day91-100').glob('91.*.md'))), None)
-          if day91:
-              text = day91.read_text(encoding='utf-8')
-              old = '![zentao-all](res/zentao-all.png)'
-              new = '![](res/zentao.png)\n\n> **Note**: The left side is the personal workspace, while the top contains the main navigation options.'
-              if old in text:
-                  day91.write_text(text.replace(old, new), encoding='utf-8')
-                  print(f'UPDATED: {day91}')
-
-          # Fix the three finance acronym typos from the latest upstream revision.
           for p in Path('.').rglob('README*.md'):
               text = p.read_text(encoding='utf-8')
               original = text
@@ -106,13 +85,9 @@ jobs:
               if text != original:
                   p.write_text(text, encoding='utf-8')
                   print(f'UPDATED: {p}')
-
-          # Remove the superseded ZenTao screenshots if still present.
-          for obsolete in ['Day91-100/res/zentao-index.png', 'Day91-100/res/zentao-login.png']:
-              Path(obsolete).unlink(missing_ok=True)
           PY
 
-          # Temporary workflows were only needed to perform/verify the migration.
+          # Temporary migration/sync workflows are no longer needed.
           rm -f .github/workflows/inspect-upstream-delta.yml
           rm -f .github/workflows/final-sync.yml
 
